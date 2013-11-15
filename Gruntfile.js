@@ -9,10 +9,11 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         mochaTest: {
-            test: {
+            'all-in-one': {
                 src: ['test/spec/**/*.js'],
                 options: {
-                    reporter: 'dot',
+                    // reporter: 'dot',
+                    reporter: 'spec',
                     // captureFile: 'test/results/server.xml'
                 }
             }

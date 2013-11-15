@@ -12,19 +12,22 @@ var __main__ = Class.extend({
 	config: null,
 	db: null,
 	load: null,
-	
+
+	pool: null,
 	model: null,
 	controller: null,
 
+	addon: null,
+
 	init: function(app) {
+		var self = this;
 		this.app = app;
 
-		this.config = require(path.join(__dirname, 'lib', 'config.js'))(this);
-		this.db = require(path.join(__dirname, 'lib', 'db.js'))(this);
-		this.load = require(path.join(__dirname, 'lib', 'load.js'))(this);
-
-		this.model = require(path.join(__dirname, 'lib', 'model.js'))(this);
-		this.controller = require(path.join(__dirname, 'lib', 'controller.js'))(this);
+		this.addon = [];
+		
+		_.each(['config', 'db', 'load', 'pool', 'Model', 'Controller'], function(value) {
+			this[value] = require(path.join(__dirname, 'lib', value.toLowerCase() + '.js'))(this);
+		}, null, this);
 	}
 
 });

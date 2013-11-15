@@ -1,38 +1,31 @@
 {
-  "name": "ekitjs-core",
-  "version": "0.0.1",
-  "description": "ekitjs core module which integrated with expressjs",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/henrytao-me/ekitjs-core.git"
-  },
-  "keywords": [
-    "ekitjs",
-    "core",
-    "module",
-    "controller",
-    "model",
-    "ekit"
-  ],
-  "author": "Henry Tao",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/henrytao-me/ekitjs-core/issues"
-  },
-  "dependencies": {
-    "ekit-util": "*",
-    "mongodb": "~1.3.19"
-  },
-  "devDependencies": {
-    "grunt": "~0.4.1",
-    "load-grunt-tasks": "~0.2.0",
-    "grunt-mocha-test": "~0.7.0",
-    "express": "~3.3.2",
-    "superagent": "~0.15.7",
-    "should": "~2.1.0"
-  }
+    "name": "ekitjs-core",
+    "version": "0.0.1",
+    "description": "ekitjs core module which integrated with expressjs",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/henrytao-me/ekitjs-core.git"
+    },
+    "keywords": ["ekitjs", "core", "module", "controller", "model", "ekit"],
+    "author": "Henry Tao",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/henrytao-me/ekitjs-core/issues"
+    },
+    "dependencies": {
+        "ekit-util": "*",
+        "mongodb": "~1.3.19"
+    },
+    "devDependencies": {
+        "grunt": "~0.4.1",
+        "load-grunt-tasks": "~0.2.0",
+        "grunt-mocha-test": "~0.7.0",
+        "express": "~3.3.2",
+        "superagent": "~0.15.7",
+        "should": "~2.1.0"
+    }
 }
