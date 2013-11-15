@@ -12,7 +12,7 @@ module.exports = function(grunt) {
             test: {
                 src: ['test/spec/**/*.js'],
                 options: {
-                    reporter: 'spec',
+                    reporter: 'dot',
                     // captureFile: 'test/results/server.xml'
                 }
             }

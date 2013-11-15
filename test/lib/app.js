@@ -24,6 +24,12 @@ if ('development' == app.get('env')) {
 
 server = http.createServer(app);
 
+app.get('/', function(req, res, next) {
+	res.json({
+		status: 'ok'
+	});
+});
+
 app.startServer = function(done){
 	server.listen(app.get('port'), function() {
 		// console.log('Test server listening on port ' + app.get('port'));
