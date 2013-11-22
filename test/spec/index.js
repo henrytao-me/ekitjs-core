@@ -46,7 +46,6 @@ describe('all-in-one test:', function() {
 
 	////////////////////////////////////////
 	// mongodb
-
 	describe('mongodb', function() {
 		it('should connect', function(done) {
 			instance.db.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
@@ -56,9 +55,9 @@ describe('all-in-one test:', function() {
 		});
 	});
 
-	describe('mongodb', function(){
-		it('should connect with collection test', function(done){
-			instance.db.collection('test', function(err, collection){
+	describe('mongodb', function() {
+		it('should connect with collection test', function(done) {
+			instance.db.collection('test', function(err, collection) {
 				(collection != null).should.be.true;
 				done();
 			});
@@ -67,114 +66,113 @@ describe('all-in-one test:', function() {
 
 	////////////////////////////////////////
 	// model
-
 	describe('model', function() {
 		it('can be connected twice times', function(done) {
 			var A = instance.Model.extend({
 				_name: 'hello'
 			});
 			a = new A();
-			var success = _.success(2, function(){
+			var success = _.success(2, function() {
 				done();
 			});
-			a.connect(function(err, collection){
+			a.connect(function(err, collection) {
 				success.success();
 			});
-			a.connect(function(err, collection){
+			a.connect(function(err, collection) {
 				success.success();
 			});
 		});
 	});
 
-	describe('model - create', function(){
-		it('should work', function(done){
-			var demo = new (instance.Model.extend({
+	describe('model - create', function() {
+		it('should work', function(done) {
+			var demo = new(instance.Model.extend({
 				_name: 'demo'
 			}))();
 			demo.create({
 				hello: 'moto'
-			}, function(err, doc){
+			}, function(err, doc) {
 				(err == null).should.be.true;
 				done();
 			});
 		});
 	});
 
-	describe('model - read', function(){
-		it('should work', function(done){
-			var demo = new (instance.Model.extend({
+	describe('model - read', function() {
+		it('should work', function(done) {
+			var demo = new(instance.Model.extend({
 				_name: 'demo'
 			}))();
 
-			var success = _.success(4, function(){
+			var success = _.success(4, function() {
 				done();
 			});
 
-			demo.read(function(err, cursor){
-				cursor.toArray(function(e, data){
+			demo.read(function(err, cursor) {
+				cursor.toArray(function(e, data) {
 					(data.length > 0).should.be.true;
 					success.success();
 				});
 			});
 
-			demo.read({}, function(err, cursor){
-				cursor.toArray(function(e, data){
+			demo.read({}, function(err, cursor) {
+				cursor.toArray(function(e, data) {
 					(data.length > 0).should.be.true;
 					success.success();
 				});
 			});
 
-			demo.read({}, {}, function(err, cursor){
-				cursor.toArray(function(e, data){
+			demo.read({}, {}, function(err, cursor) {
+				cursor.toArray(function(e, data) {
 					(data.length > 0).should.be.true;
 					success.success();
 				});
 			});
 
-			demo.findOne(function(err, data){
+			demo.findOne(function(err, data) {
 				(_.isObject(data, true)).should.be.true;
 				success.success();
 			});
 		});
 	});
 
-	describe('model - update', function(){
-		it('should work', function(done){
-			var demo = new (instance.Model.extend({
+	describe('model - update', function() {
+		it('should work', function(done) {
+			var demo = new(instance.Model.extend({
 				_name: 'demo'
 			}))();
 
 			demo.findOne({
 				hello: 'moto'
-			}, function(err, doc){
+			}, function(err, doc) {
 				(doc != null).should.be.true;
-				if(doc){
+				if (doc) {
 					demo.update({
 						_id: doc._id
 					}, {
 						$set: {
 							test: 'ok'
 						}
-					}, function(e, d){
+					}, function(e, d) {
 						demo.findOne({
 							_id: doc._id
-						}, function(e, d){
+						}, function(e, d) {
 							d.test.should.equal('ok');
 						});
 					});
 				};
 				return done();
-			});			
+			});
 		});
 	});
 
-	describe('model - delete', function(){
-		it('should work', function(done){
-			var demo = new (instance.Model.extend({
+	describe('model - delete', function() {
+		it('should work', function(done) {
+			var demo = new(instance.Model.extend({
 				_name: 'demo'
 			}))();
 
-			demo.remove(function(e, numOfDocs){
+			demo.remove(function(e, numOfDocs) {
 				(numOfDocs > 0).should.be.true;
 				done();
 			});
@@ -183,23 +181,56 @@ describe('all-in-one test:', function() {
 
 	////////////////////////////////////////
 	// controller
+	describe('controller', function() {
+		it('should work', function(done) {
+			// var ctlTest = new (instance.Controller.extend({
+			// 	'get://hello?a=b': function(){
+			// 	}
+			// }))();
+			// var res = ctlTest.export();
+			// res['get://hello?a=b'].method.should.equal('get');
+			// res['get://hello?a=b'].url.should.equal('/hello?a=b');
+			// _.isFunction(res['get://hello?a=b'].callback).should.be.true;
+			instance.pool.set('ctlTest', instance.Controller.extend({
+				data: {
+					hello: 'moto',
+					post: {
+						post: 'ok'
+					}
+				},
 
-	describe('controller', function(){
-		it('should work', function(){
-			var ctlTest = new (instance.Controller.extend({
-				'get://hello?a=b': function(){
+				'get://ctlTest': function(req, res, next) {
+					res.send(this.data);
+				},
 
+				'post://postTest': function(req, res, next) {
+					res.send(this.data.post);
 				}
-			}))();
-			var res = ctlTest.export();
-			res['get://hello?a=b'].method.should.equal('get');
-			res['get://hello?a=b'].url.should.equal('/hello?a=b');
-			_.isFunction(res['get://hello?a=b'].callback).should.be.true;
+
+			}));
+			instance.start();
+
+			var success = _.success(2, function() {
+				done();
+			});
+
+			agent.get(app.url() + 'ctlTest').end(function(err, res) {
+				res.should.have.status(200);
+				res.body.hello.should.be.equal('moto');
+				success.success();
+			});
+
+			agent.post(app.url() + 'postTest').end(function(err, res) {
+				res.should.have.status(200);
+				res.body.post.should.be.equal('ok');
+				success.success();
+			});
 		});
 	});
 });
 
-function test() {
+
+function tmp() {
 	describe('tmp', function() {
 
 		before(function(done) {
