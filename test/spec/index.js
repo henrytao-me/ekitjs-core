@@ -44,6 +44,9 @@ describe('all-in-one test:', function() {
 		app.stopServer(done);
 	});
 
+	////////////////////////////////////////
+	// mongodb
+
 	describe('mongodb', function() {
 		it('should connect', function(done) {
 			instance.db.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
@@ -61,6 +64,9 @@ describe('all-in-one test:', function() {
 			});
 		});
 	});
+
+	////////////////////////////////////////
+	// model
 
 	describe('model', function() {
 		it('can be connected twice times', function(done) {
@@ -174,76 +180,26 @@ describe('all-in-one test:', function() {
 			});
 		});
 	});
-});
 
+	////////////////////////////////////////
+	// controller
 
-function test() {
+	describe('controller', function(){
+		it('should work', function(){
+			var ctlTest = new (instance.Controller.extend({
+				'get://hello?a=b': function(){
 
-	describe('model - read', function(){
-		it('should support read', function(done){
-			var demo = new (instance.Model.extend({
-				_name: 'demo'
+				}
 			}))();
-			
-			demo.find({}, {}, function(err, cursor){
-				cursor.toArray(function(e, data){
-					// console.log(data);
-				});
-			});
-
-			return;
-
-			return done();
-			
-			demo.connect(function(e, collection){
-
-				collection.__find = (function(collection, func){
-					return function(){
-						return func.apply(collection, arguments);
-					};
-				})(collection, collection.find);
-
-				collection.find = (function(collection, func){
-					return function(){
-						var res = collection.__find.apply(collection, arguments);
-						res.each = function(f){
-							f(false, 'OK Man');
-						};
-						return res;
-					};
-				})(collection, collection.find);
-
-				collection.find({}).each(function(e, doc){
-					console.log('--- ', doc);
-				});
-				done();
-
-				return;
-				var tmp = collection.find({}, function(e, doc){
-					console.log('aaaaaaaaa');
-					doc.each(function(e, doc){
-						console.log('--- ', doc);
-					});
-					// doc.toArray(function(e, doc){
-					// 	console.log('---', doc);
-					// });
-				});
-				done();
-			});
-
-			return;
-			demo.read(function(err, docs){
-				// docs.each(function(err, doc){
-				// 	console.log(doc);
-				// 	console.log('a');
-				// });
-				// _.isArray(docs).should.be.true;
-				done();
-			});
+			var res = ctlTest.export();
+			res['get://hello?a=b'].method.should.equal('get');
+			res['get://hello?a=b'].url.should.equal('/hello?a=b');
+			_.isFunction(res['get://hello?a=b'].callback).should.be.true;
 		});
 	});
+});
 
-
+function test() {
 	describe('tmp', function() {
 
 		before(function(done) {
