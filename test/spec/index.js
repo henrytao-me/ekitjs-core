@@ -53,6 +53,15 @@ describe('all-in-one test:', function() {
 		});
 	});
 
+	describe('mongodb', function(){
+		it('should connect with collection test', function(done){
+			instance.db.collection('test', function(err, collection){
+				(collection != null).should.be.true;
+				done();
+			});
+		});
+	});
+
 	describe('model', function() {
 		it('can be connected twice times', function(done) {
 			var A = instance.Model.extend({
@@ -71,8 +80,8 @@ describe('all-in-one test:', function() {
 		});
 	});
 
-	describe('model', function(){
-		it('should support create', function(done){
+	describe('model - create', function(){
+		it('should work', function(done){
 			var demo = new (instance.Model.extend({
 				_name: 'demo'
 			}))();
@@ -85,18 +94,127 @@ describe('all-in-one test:', function() {
 		});
 	});
 
-	describe('model', function(){
-		it('should support read', function(done){
+	describe('model - read', function(){
+		it('should work', function(done){
 			var demo = new (instance.Model.extend({
 				_name: 'demo'
 			}))();
 
-			demo.connect(function(e, collection){
-				var tmp = collection.find({}, function(e, doc){
-					console.log('aaa', doc.count);
-					// console.log('aaaa', doc);
+			var success = _.success(4, function(){
+				done();
+			});
+
+			demo.read(function(err, cursor){
+				cursor.toArray(function(e, data){
+					(data.length > 0).should.be.true;
+					success.success();
 				});
-				console.log('bbb', tmp.count);
+			});
+
+			demo.read({}, function(err, cursor){
+				cursor.toArray(function(e, data){
+					(data.length > 0).should.be.true;
+					success.success();
+				});
+			});
+
+			demo.read({}, {}, function(err, cursor){
+				cursor.toArray(function(e, data){
+					(data.length > 0).should.be.true;
+					success.success();
+				});
+			});
+
+			demo.findOne(function(err, data){
+				(_.isObject(data, true)).should.be.true;
+				success.success();
+			});
+		});
+	});
+
+	describe('model - update', function(){
+		it('should work', function(done){
+			var demo = new (instance.Model.extend({
+				_name: 'demo'
+			}))();
+
+			demo.findOne({
+				hello: 'moto'
+			}, function(err, doc){
+				(doc != null).should.be.true;
+				if(doc){
+					demo.update({
+						_id: doc._id
+					}, {
+						$set: {
+							test: 'ok'
+						}
+					}, function(e, d){
+						demo.findOne({
+							_id: doc._id
+						}, function(e, d){
+							d.test.should.equal('ok');
+						});
+					});
+				};
+				return done();
+			});			
+		});
+	});
+});
+
+
+function test() {
+
+	describe('model - read', function(){
+		it('should support read', function(done){
+			var demo = new (instance.Model.extend({
+				_name: 'demo'
+			}))();
+			
+			demo.find({}, {}, function(err, cursor){
+				cursor.toArray(function(e, data){
+					// console.log(data);
+				});
+			});
+
+			return;
+
+			return done();
+			
+			demo.connect(function(e, collection){
+
+				collection.__find = (function(collection, func){
+					return function(){
+						return func.apply(collection, arguments);
+					};
+				})(collection, collection.find);
+
+				collection.find = (function(collection, func){
+					return function(){
+						var res = collection.__find.apply(collection, arguments);
+						res.each = function(f){
+							f(false, 'OK Man');
+						};
+						return res;
+					};
+				})(collection, collection.find);
+
+				collection.find({}).each(function(e, doc){
+					console.log('--- ', doc);
+				});
+				done();
+
+				return;
+				var tmp = collection.find({}, function(e, doc){
+					console.log('aaaaaaaaa');
+					doc.each(function(e, doc){
+						console.log('--- ', doc);
+					});
+					// doc.toArray(function(e, doc){
+					// 	console.log('---', doc);
+					// });
+				});
 				done();
 			});
 
@@ -111,10 +229,8 @@ describe('all-in-one test:', function() {
 			});
 		});
 	});
-});
 
 
-function test() {
 	describe('tmp', function() {
 
 		before(function(done) {

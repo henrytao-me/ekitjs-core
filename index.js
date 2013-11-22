@@ -5,7 +5,7 @@ var path = require('path');
 
 ////////////////////////////////////////
 // main class
-var __main__ = Class.extend({
+var __main__ = _.Class.extend({
 
 	app: null,
 
