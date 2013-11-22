@@ -161,6 +161,19 @@ describe('all-in-one test:', function() {
 			});			
 		});
 	});
+
+	describe('model - delete', function(){
+		it('should work', function(done){
+			var demo = new (instance.Model.extend({
+				_name: 'demo'
+			}))();
+
+			demo.remove(function(e, numOfDocs){
+				(numOfDocs > 0).should.be.true;
+				done();
+			});
+		});
+	});
 });
 
 
